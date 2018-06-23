@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset = "UTF-8">
+      <title>Hello World!</title>
+      <link rel = "stylesheet"
+         href = "./node_modules/bootstrap/dist/css/bootstrap.min.css" />
+   </head>
+
+   <body>
+      <div class = "container">
+         <h1>This page is using Bootstrap and jQuery!</h1>
+         <h3 id = "click-counter"></h3>
+         <button class = "btn btn-success" id = "countbtn">Click here</button>
+         <a href="./test.html">Link</a>
+
+         <div class = "container">
+         <h1>Enter Names and Email addresses of your contacts</h1>
+         <div class = "form-group">
+            <label for = "Name">Name</label>
+            <input type = "text" name = "Name" value = "" id = "Name"
+               placeholder = "Name" class = "form-control" required>
+         </div>
+
+         <div class = "form-group">
+            <label for = "Email">Email</label>
+            <input type = "email" name = "Email" value = "" id = "Email"
+               placeholder = "Email" class = "form-control" required>
+         </div>
+
+         <div class = "form-group">
+            <button class = "btn btn-primary" id = "add-to-list">Add to list!</button>
+         </div>
+
+         <div id = "contact-list">
+            <table class = "table-striped" id = "contact-table">
+               <tr>
+                  <th class = "col-xs-2">S. No.</th>
+                  <th class = "col-xs-4">Name</th>
+                  <th class = "col-xs-6">Email</th>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </body>
+   <script src = "./view.js" ></script>
+   <script type="text/javascript">
+    const {remote} = require('electron');
+    const {Menu, MenuItem} = remote
+
+    const menu = new Menu();
+
+    //Build menu one item at a time
+    menu.append(new MenuItem ({
+      label: 'MenuItem1',
+      click() {
+        console.log('item 1 clicked');
+      }
+    }));
+
+    menu.append(new MenuItem({type: 'separator'}));
+    menu.append(new MenuItem({label: 'MenuItem2', type='checkbox', checked: true }))
+    menu.append(new MenuItem({
+      label: 'MenuItem3',
+      click() {
+        console.log('item 3 clicked');
+      }
+    }));
+
+    //Prevent default action of right click in chromium. Replace with our menu.
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      menu.popup(remote.getCurrentWindow());
+    }, false);
+   </script>
+</html>
