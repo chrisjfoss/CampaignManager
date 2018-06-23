@@ -1,49 +1,41 @@
 let $ = require('jquery'); //jQuery now loaded and assigned to $
 let fs = require('fs');
-let filename = 'contacts';
-let sno = 0;
+let Datastore = require('nedb')
+let filename = 'monsters';
+let database = '/data/monsterdatabase'
 
 let count = 0;
+
+var db = new Datastore({filename: database, autoload: true})
+
+$("#add-to-list").on('click', () => {
+  let name = $("#Name").val();
+  let hp = $("#HP").val();
+  var monster = { name: name, hp: hp };
+  db.insert(monster, function(err, newMonster) {
+    addEntry(newMonster.name, newMonster.hp);
+  });
+})
+
 $("#click-counter").text(count.toString());
 $("#countbtn").on('click', () => {
   ++count;
   $("#click-counter").text(count);
 });
 
-$("#add-to-list").on('click', () => {
-  let name = $("#Name").val();
-  let email = $("#Email").val();
-  fs.appendFile(filename, name + ',' + email + '\n');
-
-  addEntry(name, email);
-})
-
-function addEntry(name, email) {
-  if(name && email) {
-    sno++;
-    let updateString = '<tr><td>'+sno+'</td><td>' + name + '</td><td>'
-            + email + '</td></tr>' ;
-    $("#contact-table").append(updateString);
+function addEntry(name, hp) {
+  if(name && hp) {
+    let newMonster = '<div class="card"><h5 class="card-header">'+name+'</h5><div class="card-body">'+hp+'</div></div>';
+    $("#monsters").append(newMonster);
   }
 }
 
-function loadAndDisplayContacts(name, email) {
-  //Check if file exists
-  if(fs.existsSync(filename)) {
-    let data = fs.readFileSync(filename, 'utf8').split('\n');
-
-    data.forEach((contact, index) => {
-      let [name, email] = contact.split(',');
-      addEntry(name, email);
+function loadAndDisplayMonsters(name, hp, toFind) {
+  db.find({}).exec(function(err,monsters){
+    monsters.forEach(function(monster){
+      addEntry(monster.name, monster.hp);
     });
-  } else {
-    console.log("File doesn\'t exist. Creating new file.");
-    fs.writeFile(filename, '', (err) => {
-      if(err) {
-        console.log(err);
-      }
-    })
-  }
+  });
 }
 
-loadAndDisplayContacts();
+loadAndDisplayMonsters();
