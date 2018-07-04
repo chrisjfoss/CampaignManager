@@ -8,3 +8,19 @@ stat-block {
   margin-left: 20px;
   margin-top: 20px;
 }
+
+h4 {
+  font-size:14px;
+}
+
+.hidden {
+  display: none;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}
