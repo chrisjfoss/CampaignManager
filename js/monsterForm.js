@@ -1,6 +1,11 @@
 function createForm(monster) {
   var html = insertIntoRow(getName(monster.name));
-  html += insertIntoRow(getAC(monster.ac)+getHP(monster.hpDicecount, monster.hpDice, monster.hpAdd)+getSPD(monster.spd));
+  html += getHiddenId(monster._id);
+  html += insertIntoRow(getSelect("Size", "Size", "col-12 col-lg-4",["Fine", "Tiny", "Small", "Medium", "Large", "Gargantuan", "Colossal"], monster.size)
+                      + getSelect("Order", "Order", "col-6 col-lg-4", ["Lawful", "Neutral", "Chaotic"], monster.order)
+                      + getSelect("Morality", "Morality", "col-6 col-lg-4", ["Good", "Neutral", "Evil"], monster.morality));
+
+  html += insertIntoRow(getSelect("Type", "Type", "col-6 col-lg-3", ["Aberration", "Celestial", "Beast", "Construct", "Dragon", "Elemental", "Fey", "Fiend", "Giant", "Humanoid", "Monstrosity", "Ooze", "Plant", "Undead"], monster.type)+getHP(monster.hpDicecount, monster.hpDice, monster.hpAdd)+getAC(monster.ac));
   html += insertIntoRow(getStat("STR","",false,monster.str)+getStat("DEX","",false,monster.dex)+
                         getStat("CON","",false,monster.con)+getStat("INT","",false,monster.int)+
                         getStat("WIS","",false,monster.wis)+getStat("CHA","",false,monster.cha));
@@ -8,13 +13,50 @@ function createForm(monster) {
   html += insertIntoRow(getStat("STR","STRsave",true,monster.strSave)+getStat("DEX","DEXsave",true,monster.dexSave)+
                         getStat("CON","CONsave",true,monster.conSave)+getStat("INT","INTsave",true,monster.intSave)+
                         getStat("WIS","WISsave",true,monster.wisSave)+getStat("CHA","CHAsave",true,monster.chaSave));
-  html += insertIntoRow(getInputLists("Damage Immunities", "dimmunity", monster.dimmunities)+getInputLists("Damage Resistances", "dresistance", monster.dresistances)+getInputLists("Damage Vulnerabilities", "dvulnerability", monster.dvulnerabilities)+getInputLists("Condition Immunities", "cimmunity", monster.cimmunities));
+  html += insertIntoRow(getInputLists("Speeds", "speed", monster.speeds)
+                      + getInputLists("Environments", "environment", monster.environments)
+                      + getInputLists("Skills", "skill", monster.skills)
+                      + getInputLists("Damage Immunities", "dimmunity", monster.dimmunities)
+                      + getInputLists("Damage Resistances", "dresistance", monster.dresistances)
+                      + getInputLists("Damage Vulnerabilities", "dvulnerability", monster.dvulnerabilities)
+                      + getInputLists("Condition Immunities", "cimmunity", monster.cimmunities));
   html += insertIntoRow(getInputLists("Senses", "sense",monster.senses)+getInputLists("Languages", "language",monster.languages));
   html += getNameDescriptionLists("Traits", "trait",monster.traits);
   html += getNameDescriptionLists("Actions", "action",monster.actions);
-  html += getNameDescriptionLists("Legendary Actions", "laction",monster.legendaryActions, true);
-  html += insertIntoRow(getStat("CR","",false,monster.cr));
+  html += getNameDescriptionLists("Legendary Actions", "legendaryAction",monster.legendaryActions, true);
+  html += getNameDescriptionLists("Lair Actions", "lairAction",monster.lairActions, true);
+  html += insertIntoRow(getStat("Home CR","CR",false,monster.cr) + getStat("Non-Environment CR","nonEnvironmentCR",false,monster.nonEnvironmentCR));
+  html += insertIntoRow(`<div class="form-group col-12"><label for="Description">Description</label><div id="Description" class="form-control col-12" contenteditable>${monster.description}</div></div>`);
   html += getSubmitButton();
+  return html;
+}
+
+/*
+function getDataList(id, placeholder="", datalist = [], defaultoption="") {
+  let html =  `<div class="col-6 col-lg-3">
+            <input class="form-control" type="text" list="values" placeholder="placeholder" id="${id}" />
+            <datalist id="values"><select>`;
+  datalist.forEach(function(item) {
+    html += `<option>${item}</option>`;
+  });
+  html += `</select></datalist></div>`;
+  return html;
+}*/
+
+function getSelect(id, name="", classes, options=[], defaultoption="") {
+  let html = `<div class="form-group ${classes}">
+                <label for="${id}">${name}</label>
+                <select class="form-control" type="text" id="${id}">`;
+  options.forEach(function(item) {
+    console.log(defaultoption);
+    if(defaultoption === item) {
+      html += `<option value=${item} selected>${item}</option>`;
+    }
+    else {
+      html += `<option value=${item}>${item}</option>`;
+    }
+  });
+  html += `</select></div>`;
   return html;
 }
 
@@ -27,7 +69,6 @@ function createNewForm(pageFrom) {
 
   $(".monsterForm .container").html(html);
   $(".monsterForm").data("from", pageFrom);
-  console.log(pageFrom);
   $(".page").addClass("hidden");
   $(".monsterForm.page").removeClass("hidden");
 }
@@ -37,6 +78,11 @@ function getSubmitButton() {
              <button onclick="createMonster()" class="btn btn-primary" id="add-to-list">Create Monster</button>
           </div>`;
 }
+
+function getHiddenId(id) {
+  return `<input type="hidden" value="${id}" name="monsterId" id="monsterId" />`;
+}
+
 function getName(name="") {
   return `<div class = "form-group col-12">
              <label for = "Name">Name</label>
@@ -96,8 +142,8 @@ function getStat(statName, identifier="", saveThrows=false, value=-10) {
     }
   }
   return `<div class = "form-group col-4 col-lg-2">
-             <label for = "${statName}">${statName}</label>
-             <input type = "number" name = "${statName}" value = "${value}" id = "${statName}"
+             <label for = "${identifier}">${statName}</label>
+             <input type = "number" name = "${identifier}" value = "${value}" id = "${identifier}"
                 placeholder = "${statName}" class = "form-control" required>
           </div>`;
 }
@@ -108,12 +154,10 @@ function getInputLists(statName, identifier, values=[]) {
                     <div data-template="${identifier}" class="repeatContents">`;
   count = 1;
   values.forEach(function(e) {
-    toReturn += `<input oninput='addRow(this)' onchange='addRow(this)' type="text" name="${identifier}${count}" value="${e}" id="${identifier}${count}"
-                            placeholder="${statName} ${count}" class="form-control" />`;
+    toReturn += getTemplate(identifier, count, e);
     count += 1;
   })
-  toReturn += `<input oninput='addRow(this)' onchange='addRow(this)' type="text" name="${identifier}${count}" value="" id="${identifier}${count}"
-                          placeholder="${statName} ${count}" class="form-control" />`;
+  toReturn += getTemplate(identifier, count);
   toReturn += `</div>
                   </div>`;
   return toReturn;
@@ -122,22 +166,21 @@ function getInputLists(statName, identifier, values=[]) {
 function getNameDescriptionLists(statName, identifier, values=[], sectionDescription=false) {
   var count=0;
   var toReturn = `<h3>${statName}</h3>`;
-
+  toReturn += `<div data-template="${identifier}" class="row repeatContents">`;
   if(sectionDescription) {
     if(values.length==0) {
       values.push({description:""});
     }
-    toReturn += `<div class="row">
+    toReturn += `
                   <div class="form-group col-12">
                     <textarea class="form-control" name="${identifier}description" id="${identifier}description" placeholder="${statName} Description">${values[0].description}</textarea>
                   </div>
-                </div>`;
+                `;
   }
   else
   {
     count+=1;
   }
-  toReturn += `<div data-template="${identifier}" class="row repeatContents">`;
   values.forEach(function(e) {
   if(!sectionDescription || count != 0) {
     toReturn += `<div oninput='addRow(this)' onchange='addRow(this)' class="form-group col-12 ${identifier}">

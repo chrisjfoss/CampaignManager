@@ -1,23 +1,20 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "Campaign_Tracker",
+  "version": "0.0.1",
+  "description": "An Electron application to track 5e Campaigns",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/chrisjfoss/MonsterTracker",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Electron"
   ],
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^2.0.0"
+    "electron": "^2.0.0",
+    "electron-packager": "^12.1.0"
   },
   "dependencies": {
     "bootstrap": "^4.1.1",

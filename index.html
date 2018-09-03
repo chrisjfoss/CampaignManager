@@ -1,71 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html style="background-color:#444449;">
+
    <head>
       <meta charset = "UTF-8">
       <title>Campaign Tracker</title>
+      <script src = "./js/view.js" ></script>
+      <script src = "./js/menu.js"></script>
+      <script src = "./js/monsterstats.js"></script>
+      <script src = "./js/monsterForm.js"></script>
+      <script src = "./js/campaign.js"></script>
       <link rel = "stylesheet"
          href = "./node_modules/bootstrap/dist/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="font-awesome/css/all.css" />
       <link rel = "stylesheet" href="index.css" />
    </head>
 
-<div class="home page">
-  <div class="sidebar-left">
-   <h3 class="text-center">Campaigns</h3>
-   <input type="search" id="searchCampaigns" placeholder="Search Campaigns" />
+ <!-- The Modal -->
+ <div class="modal fade" id="modal">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <!-- Modal body -->
+       <div class="modal-body">
+       </div>
 
+       <!-- Modal footer -->
+       <div class="modal-footer">
+       </div>
+
+     </div>
+   </div>
+ </div>
+
+ <div class="sidebar-left">
+  <h3 class="text-center">Campaigns</h3>
+  <div class="col-12"><input oninput="filterCampaigns(this);" type="search" id="searchCampaigns" class="form-control" placeholder="Search Campaigns" /></div>
+ <!-- <div class="col-6"><input type="text" class="form-control" name="name" placeholder="Name" id="campaignName" style="display:inline-block" /><button class="btn btn-primary" onclick="addCampaignFromClick()">Add Campaign</button></div>-->
+  <div id="campaigns">
   </div>
-  <div class="sidebar-right">
-   <h3 class="text-center">Monsters</h3>
+ </div>
 
+<div class="home page">
+   <h3 class="text-center">Monsters</h3>
    <div class="row">
-     <div class="col-9"><input type="search" class="form-control" id="searchMonsters" placeholder="Search Monsters" /></div>
+     <div class="col-9"><input oninput="filterMonsters(this);" type="search" class="form-control" id="searchMonsters" placeholder="Search Monsters" /></div>
      <div class="col-3 pull-right"><button class="btn btn-primary" onclick="createNewForm('home')">Create Monster</button></div>
    </div>
    <div id="monsters">
    </div>
+</div>
+
+<div class="campaign page hidden">
+  <div class="encounter-monsters">
+  </div>
+  <div class="campaign-notes">
   </div>
 </div>
 
-<div class="monsterForm hidden page">
+<div class="monsterForm page hidden">
   <button onclick="goBack(this)" class="btn btn-secondary">Back</button>
         <div class = "container">
         </div>
 </div>
-<script src = "./view.js" ></script>
-<script src = "./monsterstats.js"></script>
-<script src = "./monsterForm.js"></script>
-<script type="text/javascript">
- const {remote} = require('electron');
- const {Menu, MenuItem} = remote
-
- const menu = new Menu();
-
- //Build menu one item at a time
- menu.append(new MenuItem ({
-   label: 'MenuItem1',
-   click() {
-     console.log('item 1 clicked');
-   }
- }));
-
- menu.append(new MenuItem({type: 'separator'}));
- menu.append(new MenuItem({label: 'MenuItem2', type:'checkbox', checked: true }))
- menu.append(new MenuItem({
-   label: 'MenuItem3',
-   click() {
-     console.log('item 3 clicked');
-   }
- }));
-
- //Prevent default action of right click in chromium. Replace with our menu.
- window.addEventListener('contextmenu', (e) => {
-   e.preventDefault();
-   menu.popup(remote.getCurrentWindow());
- }, false);
-</script>
 </div>
 <div class="monsterstat page hidden">
-  <!DOCTYPE html>
   <html>
     <head>
       <link href="monsterstats.css" rel="stylesheet" type="text/css" />
