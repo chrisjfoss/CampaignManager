@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+}
+
+stat-block {
+  /* A bit of margin for presentation purposes, to show off the drop
+  shadow. */
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+h4 {
+  font-size:14px;
+}
+
+.hidden {
+  display: none;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}

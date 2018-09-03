@@ -1,0 +1,74 @@
+#monsters .card {
+  cursor: pointer;
+}
+
+
+.page {
+    padding-top: 15px;
+    left: 250px;
+    right:0px;
+    color: #dbdbe0;
+    position: fixed;
+    height:100vh;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    margin-left:10px;
+}
+
+.sidebar-left {
+    padding-top: 15px;
+    position: fixed;
+    height:100vh;
+    right: 0;
+    overflow-y: scroll;
+    left: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 250px;
+    border-right: solid;
+    border-width: 1px;
+    border-color: #c2c4c6;
+    color: #dbdbe0;
+}
+
+stat-block {
+  color:#000;
+}
+
+.card {
+  background-color: #353638;
+  color: #dbdbe0;
+  margin-bottom:1px;
+  margin-top:2px;
+}
+
+.campaign-row {
+  padding-left: 10px;
+}
+
+.campaign-row.session-name {
+  padding-left: 20px;
+}
+
+.campaign-row.encounter-name {
+  padding-left: 40px;
+}
+
+.selected-row {
+  background-color: #d4d4d6;
+  color: #000000;
+}
+
+
+body {
+  background-color: #444449;
+}
+
+.campaign-name, .session-name, .encounter-name {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
