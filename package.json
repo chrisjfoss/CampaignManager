@@ -17,7 +17,7 @@
     "electron-packager": "^12.1.0"
   },
   "dependencies": {
-    "bootstrap": "^4.1.1",
+    "bootstrap": "^4.3.1",
     "electron-db": "^0.15.2",
     "jquery": "^3.4.0",
     "nedb": "^1.8.0",
