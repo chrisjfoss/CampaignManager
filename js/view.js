@@ -4,13 +4,21 @@ const bootstrap = require('bootstrap')
 let $ = require('jquery'); //jQuery now loaded and assigned to $
 let fs = require('fs');
 let Datastore = require('nedb')
+let db2 = require('electron-db')
+
 let filename = 'monsters';
-let database = DataPath+'monsterdatabase'
+let database = DataPath+'monsterdatabase';
+let database2 = DataPath+'monsterdatabase2';
 
 let count = 0;
 
 
-var db = new Datastore({filename: database, autoload: true})
+var db = new Datastore({filename: database, autoload: true});
+db2.createTable('monsterdatabase', DataPath, (succ,msg) => {
+	//succ - boolean, tells if the call is successful
+	console.log("Success: " + succ);
+	console.log("Message: " + msg);
+});
 
 function filterMonsters(e) {
   let text = $(e).val();
@@ -28,13 +36,32 @@ function createMonster() {
   let id = $("#monsterId").val();
   if(id != "undefined")
   {
-    db.update({ _id: id }, monster, {}, function() {});
+    //db.update({ _id: id }, monster, {}, function() {});
+	console.log(id);
+	let where = {
+		"id": parseInt(id)
+	}
+	
+	db2.updateRow('monsterdatabase', DataPath, where, monster, (succ,msg) => {
+		console.log("Success: " + succ);
+		console.log("Message: " + msg);
+	});
+	
   }
   else
   {
-    db.insert(monster, function(err, newMonster) {
-      addEntry(newMonster.name, newMonster.hp, monster.cr);
-    });
+		
+    //db.insert(monster, function(err, newMonster) {
+//      addEntry(newMonster.name, newMonster.hp, monster.cr);
+    //});
+	
+	if(db2.valid('monsterdatabase', DataPath)) {
+	    db2.insertTableContent('monsterdatabase', DataPath, monster, (succ,msg) => {
+			console.log("Success: " + succ);
+			console.log("Message: " + msg);
+			addEntry(monster.name, monster.hp, monster.cr);
+		});
+	}
   }
 
   switchToPage("home");
@@ -155,11 +182,33 @@ function addEntry(name, hp, cr, id="") {
 }
 
 function loadAndDisplayMonsters() {
-  db.find({}).sort( { cr: 1, name: 1 } ).exec(function(err,monsters){
-    monsters.forEach(function(monster){
-      addEntry(monster.name, monster.hp, monster.cr, monster._id);
-    });
+  db2.getAll('monsterdatabase', DataPath, (succ, data) => {
+	  console.log("Success: " + succ);
+	  data.sort(compareMonsters).forEach(function(monster){
+		  addEntry(monster.name, monster.hp, monster.cr, monster.id);
+	  });
   });
+}
+
+function compareMonsters(monster1, monster2) {
+	if(!monster1.cr){
+		monster1.cr = 0;
+	}
+	if(!monster1.hp) {
+		monster1.hp = 0;
+	}
+	if(!monster2.cr){
+		monster2.cr = 0;
+	}
+	if(!monster2.hp){
+		monster2.hp = 0;
+	}
+	if(monster1.cr === monster2.cr){
+		return monster1.hp - monster2.hp;
+	} else {
+		return monster1.cr - monster2.cr;
+	}
+
 }
 
 function addRow(e, groupSize=1) {
@@ -241,4 +290,6 @@ function getTemplate(templateName, count, value="") {
               </div>`;
   }
 }
-loadAndDisplayMonsters();
+$(document).ready(function() {
+	loadAndDisplayMonsters();
+});

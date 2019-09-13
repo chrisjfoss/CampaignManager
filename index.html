@@ -13,6 +13,94 @@
          href = "./node_modules/bootstrap/dist/css/bootstrap.min.css" />
       <link rel="stylesheet" href="font-awesome/css/all.css" />
       <link rel = "stylesheet" href="index.css" />
+	  
+	  
+	  <style>
+          creature-heading h1 {
+            font-family: 'Libre Baskerville', 'Lora', 'Calisto MT',
+                         'Bookman Old Style', Bookman, 'Goudy Old Style',
+                         Garamond, 'Hoefler Text', 'Bitstream Charter',
+                         Georgia, serif;
+            color: #7A200D;
+            font-weight: 700;
+            margin: 0px;
+            font-size: 23px;
+            letter-spacing: 1px;
+            font-variant: small-caps;
+          }
+
+          creature-heading h2 {
+            font-weight: normal;
+            font-style: italic;
+            font-size: 12px;
+            margin: 0;
+          }
+		  
+		  property-line {
+		      color: #7A200D;
+		  }
+		  
+		  property-line, property-block {
+            margin-top: 0.3em;
+            margin-bottom: 0.9em;
+            line-height: 1.5;
+            display: block;
+          }
+
+          property-line h4, property-block h4  {
+            margin: 0;
+            display: inline;
+            font-weight: bold;
+            font-style: italic;
+          }
+
+          property-line p:first-of-type, property-block p:first-of-type {
+            display: inline;
+            text-indent: 0;
+          }
+
+          .properties p {
+            text-indent: 1em;
+            margin: 0;
+          }
+		  
+		  abilities-block table {
+            width: 100%;
+            border: 0px;
+            border-collapse: collapse;
+			color: #7A200D;
+          }
+          abilities-block th, abilities-block td {
+            width: 50px;
+            text-align: center;
+          }
+		  
+		  .stat-block h3 {
+            border-bottom: 1px solid #7A200D;
+            color: #7A200D;
+            font-size: 21px;
+            font-variant: small-caps;
+            font-weight: normal;
+            letter-spacing: 1px;
+            margin: 0;
+            margin-bottom: 0.3em;
+
+            break-inside: avoid-column;
+            break-after: avoid-column;
+          }
+
+          /* For user-level p elems. */
+          .stat-block property-block p {
+            margin-top: 0.3em;
+            margin-bottom: 0.9em;
+            line-height: 1.5;
+          }
+
+          /* Last child shouldn't have bottom margin, too much white space. */
+          .stat-block *:last-child {
+            margin-bottom: 0;
+          }
+        </style>
    </head>
 
  <!-- The Modal -->
@@ -95,7 +183,7 @@
               value: function() {
                 var template = thisDoc.getElementById(elemName);
                 var clone = thatDoc.importNode(template.content, true);
-                this.createShadowRoot().appendChild(clone);
+                this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             }
           });
@@ -104,13 +192,13 @@
       </script>
       <template id="top-stats">
         <style>
-          ::content * {
+          ::slot * {
             color: #7A200D;
           }
         </style>
 
         <tapered-rule></tapered-rule>
-        <content></content>
+        <slot></slot>
         <tapered-rule></tapered-rule>
       </template>
       <script>
@@ -123,7 +211,7 @@
               value: function() {
                 var template = thisDoc.getElementById(elemName);
                 var clone = thatDoc.importNode(template.content, true);
-                this.createShadowRoot().appendChild(clone);
+                this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             }
           });
@@ -131,29 +219,8 @@
         })(window, document);
       </script>
       <template id="creature-heading">
-        <style>
-          ::content > h1 {
-            font-family: 'Libre Baskerville', 'Lora', 'Calisto MT',
-                         'Bookman Old Style', Bookman, 'Goudy Old Style',
-                         Garamond, 'Hoefler Text', 'Bitstream Charter',
-                         Georgia, serif;
-            color: #7A200D;
-            font-weight: 700;
-            margin: 0px;
-            font-size: 23px;
-            letter-spacing: 1px;
-            font-variant: small-caps;
-          }
-
-          ::content > h2 {
-            font-weight: normal;
-            font-style: italic;
-            font-size: 12px;
-            margin: 0;
-          }
-        </style>
-        <content select="h1"></content>
-        <content select="h2"></content>
+        <slot name="firstHeader"></slot>
+        <slot name="secondHeader"></slot>
       </template>
       <script>
         (function(window, document) {
@@ -165,7 +232,7 @@
               value: function() {
                 var template = thisDoc.getElementById(elemName);
                 var clone = thatDoc.importNode(template.content, true);
-                this.createShadowRoot().appendChild(clone);
+                this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             }
           });
@@ -174,35 +241,11 @@
       </script>
       <template id="abilities-block">
         <style>
-          table {
-            width: 100%;
-            border: 0px;
-            border-collapse: collapse;
-          }
-          th, td {
-            width: 50px;
-            text-align: center;
-          }
+          
         </style>
         <tapered-rule></tapered-rule>
-        <table>
-          <tbody><tr>
-            <th>STR</th>
-            <th>DEX</th>
-            <th>CON</th>
-            <th>INT</th>
-            <th>WIS</th>
-            <th>CHA</th>
-          </tr>
-          <tr>
-            <td id="str"></td>
-            <td id="dex"></td>
-            <td id="con"></td>
-            <td id="int"></td>
-            <td id="wis"></td>
-            <td id="cha"></td>
-          </tr>
-        </tbody></table>
+		<slot name='abilities-block'>
+		</slot>
         <tapered-rule></tapered-rule>
       </template>
       <script>
@@ -236,7 +279,7 @@
               value: function() {
                 var template = thisDoc.getElementById(elemName);
                 var clone = thatDoc.importNode(template.content, true);
-                var root = this.createShadowRoot().appendChild(clone);
+                var root = this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             },
             attachedCallback: {
@@ -256,31 +299,31 @@
         })(window, document);
       </script>
       <template id="property-line">
-        <style>
-          :host {
-            line-height: 1.4;
-            display: block;
-            text-indent: -1em;
-            padding-left: 1em;
-          }
+		<style>
+			:host {
+				line-height: 1.4;
+				display: block;
+				text-indent: -1em;
+				padding-left: 1em;
+			}
+			
+			::slot > p:first-of-type {
+				display: inline;
+				text-indent: 0;
+			}
+			
+			h4 {
+				margin: 0;
+				display: inline;
+				font-weight: bold;
+			}
 
-          ::content > h4 {
-            margin: 0;
-            display: inline;
-            font-weight: bold;
-          }
-
-          ::content > p:first-of-type {
-            display: inline;
-            text-indent: 0;
-          }
-
-          ::content > p {
-            text-indent: 1em;
-            margin: 0;
-          }
-        </style>
-        <content></content>
+			::slot > p {
+				text-indent: 1em;
+				margin: 0;
+			}
+		</style>
+        <slot></slot>
       </template>
       <script>
         (function(window, document) {
@@ -292,7 +335,7 @@
               value: function() {
                 var template = thisDoc.getElementById(elemName);
                 var clone = thatDoc.importNode(template.content, true);
-                this.createShadowRoot().appendChild(clone);
+                this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             }
           });
@@ -300,32 +343,7 @@
         })(window, document);
       </script>
       <template id="property-block">
-        <style>
-          :host {
-            margin-top: 0.3em;
-            margin-bottom: 0.9em;
-            line-height: 1.5;
-            display: block;
-          }
-
-          ::content > h4 {
-            margin: 0;
-            display: inline;
-            font-weight: bold;
-            font-style: italic;
-          }
-
-          ::content > p:first-of-type {
-            display: inline;
-            text-indent: 0;
-          }
-
-          ::content > p {
-            text-indent: 1em;
-            margin: 0;
-          }
-        </style>
-        <content></content>
+        <slot></slot>
       </template>
       <script>
         (function(window, document) {
@@ -337,7 +355,7 @@
               value: function() {
                 var template = thisDoc.getElementById(elemName);
                 var clone = thatDoc.importNode(template.content, true);
-                this.createShadowRoot().appendChild(clone);
+                this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             }
           });
@@ -396,36 +414,10 @@
             /* One column is 400px and the gap between them is 40px. */
             width: 840px;
           }
-
-          ::content > h3 {
-            border-bottom: 1px solid #7A200D;
-            color: #7A200D;
-            font-size: 21px;
-            font-variant: small-caps;
-            font-weight: normal;
-            letter-spacing: 1px;
-            margin: 0;
-            margin-bottom: 0.3em;
-
-            break-inside: avoid-column;
-            break-after: avoid-column;
-          }
-
-          /* For user-level p elems. */
-          ::content > p {
-            margin-top: 0.3em;
-            margin-bottom: 0.9em;
-            line-height: 1.5;
-          }
-
-          /* Last child shouldn't have bottom margin, too much white space. */
-          ::content > *:last-child {
-            margin-bottom: 0;
-          }
         </style>
         <div class="bar"></div>
         <div id="content-wrap">
-          <content></content>
+          <slot></slot>
         </div>
         <div class="bar"></div>
       </template>
@@ -445,7 +437,7 @@
                   wrap.style.height = this.getAttribute('data-content-height') + 'px';
                 }
                 var clone = thatDoc.importNode(template.content, true);
-                this.createShadowRoot().appendChild(clone);
+                this.attachShadow({ mode: 'closed' }).appendChild(clone);
               }
             }
           });

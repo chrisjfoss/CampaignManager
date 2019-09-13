@@ -1,6 +1,6 @@
 function createForm(monster) {
   var html = insertIntoRow(getName(monster.name));
-  html += getHiddenId(monster._id);
+  html += getHiddenId(monster.id);
   html += insertIntoRow(getSelect("Size", "Size", "col-12 col-lg-4",["Fine", "Tiny", "Small", "Medium", "Large", "Gargantuan", "Colossal"], monster.size)
                       + getSelect("Order", "Order", "col-6 col-lg-4", ["Lawful", "Neutral", "Chaotic"], monster.order)
                       + getSelect("Morality", "Morality", "col-6 col-lg-4", ["Good", "Neutral", "Evil"], monster.morality));

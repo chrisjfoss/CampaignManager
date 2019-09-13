@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.1.1",
+    "electron-db": "^0.15.2",
     "jquery": "^3.3.1",
     "nedb": "^1.8.0",
     "npm": "^6.1.0",
